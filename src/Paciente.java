@@ -1,59 +1,58 @@
 import java.util.ArrayList;
 
-public class ManejoCitas{
+public class Paciente {
+    private final int id;
+    private final String nombre;
+    private final int edad;
+    private final ArrayList<Cita> historialClinico;
 
-    private ArrayList<Cita> citas;
-    public ManejoCitas(){
-        citas = new ArrayList<Cita>();
+    public Paciente(int id, String nombre, int edad) {
+        this.id = id;
+        this.nombre = nombre;
+        this.edad = edad;
+        this.historialClinico = new ArrayList<>();
     }
 
-    public boolean crearCita(Cita nuevaCita){
+    public int getId() {
+        return id;
+    }
 
-        if (nuevaCita == null){
+    public String getNombre() {
+        return nombre;
+    }
+
+    public int getEdad() {
+        return edad;
+    }
+
+    public boolean agregarCita(Cita cita) {
+        if (cita == null || cita.getIdPaciente() != id) {
             return false;
         }
-
-        //Verificar double booking  
-        for (Cita cita : citas){
-            if (cita.getId() == nuevaCita.getId()){
+        for (Cita existente : historialClinico) {
+            if (existente.getId() == cita.getId()) {
                 return false;
             }
         }
-
-        citas.add(nuevaCita);
+        historialClinico.add(cita);
         return true;
     }
 
-    public Cita buscarCita(int id){
-
-        for (Cita cita : citas){
-            if (cita.getId() == id) {
-                return cita;
-            }
+    public void mostrarHistorialClinico() {
+        if (historialClinico.isEmpty()) {
+            System.out.println("El paciente no tiene citas en su historial.");
+            return;
         }
-
-        return null;
-    }
-
-    // Cancelar cita
-    public boolean cancelarCita(int id) {
-
-        Cita cita = buscarCita(id);
-
-        if (cita == null || cita.isCancelada() || cita.isCompletada()){
-            return false;
-        }
-
-        cita.cancelarCita();
-        return true;
-    }
-
-
-    public void mostrarCitas() {
-
-        for (Cita cita : citas) {
+        for (Cita cita : historialClinico) {
             System.out.println(cita);
             System.out.println("--------------------");
         }
     }
-} 
+
+    @Override
+    public String toString() {
+        return "Paciente ID: " + id +
+               "\nNombre: " + nombre +
+               "\nEdad: " + edad;
+    }
+}
