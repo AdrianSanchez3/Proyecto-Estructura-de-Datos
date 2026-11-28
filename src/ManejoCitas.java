@@ -20,7 +20,7 @@ public class ManejoCitas {
         if (nuevaCita == null) {
             throw new IllegalArgumentException("No se puede registrar una cita nula.");
         }
-        if (nuevaCita.getId() <= 0 || nuevaCita.getIdPaciente() <= 0 || nuevaCita.getIdMedico() <= 0
+        if (nuevaCita.getId() <= 0 || nuevaCita.getIdPaciente() <= 0 || nuevaCita.getIdMedico() == null || nuevaCita.getIdMedico().trim().isEmpty()
                 || nuevaCita.getFecha() == null || nuevaCita.getFecha().trim().isEmpty()
                 || nuevaCita.getHora() == null || nuevaCita.getHora().trim().isEmpty()) {
             throw new IllegalArgumentException("La cita contiene IDs, fecha u hora invalidos.");
@@ -34,7 +34,7 @@ public class ManejoCitas {
             if (!existente.isCancelada()
                     && existente.getFecha().equals(nuevaCita.getFecha())
                     && existente.getHora().equals(nuevaCita.getHora())) {
-                if (existente.getIdMedico() == nuevaCita.getIdMedico()) {
+                if (existente.getIdMedico().equals(nuevaCita.getIdMedico())) {
                     throw new CitaConflictivaException("El medico ya tiene una cita en ese horario.");
                 }
                 if (existente.getIdPaciente() == nuevaCita.getIdPaciente()) {

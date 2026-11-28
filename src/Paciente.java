@@ -5,11 +5,13 @@ public class Paciente {
     private final String nombre;
     private final int edad;
     private final ArrayList<Cita> historialClinico;
+    private final String especialidad;
 
-    public Paciente(int id, String nombre, int edad) {
+    public Paciente(int id, String nombre, int edad, String especialidad) {
         this.id = id;
         this.nombre = nombre;
         this.edad = edad;
+        this.especialidad = especialidad;
         this.historialClinico = new ArrayList<>();
     }
 
@@ -24,6 +26,10 @@ public class Paciente {
     public int getEdad() {
         return edad;
     }
+
+    public String getEspecialidad() {
+        return especialidad;
+    }   
 
     public boolean agregarCita(Cita cita) {
         if (cita == null || cita.getIdPaciente() != id) {
@@ -53,6 +59,7 @@ public class Paciente {
     public String toString() {
         return "Paciente ID: " + id +
                "\nNombre: " + nombre +
-               "\nEdad: " + edad;
+               "\nEdad: " + edad +
+               "\nEspecialidad: " + especialidad;
     }
 }

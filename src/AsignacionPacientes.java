@@ -29,6 +29,7 @@ public class AsignacionPacientes {
     // API estricta: permite al programa principal manejar situaciones con try/catch.
     public boolean asignarPacienteOExcepcion() {
         Paciente paciente = filaEspera.verSiguientePaciente();
+
         if (paciente == null) {
             throw new FilaVaciaException("No hay pacientes en espera.");
         }
@@ -37,24 +38,47 @@ public class AsignacionPacientes {
                 "El paciente " + paciente.getId() + " ya tiene un medico asignado.");
         }
 
-        ArrayList<Doctor> medicosDisponibles = empleados.getAvailableDoctors();
-        if (medicosDisponibles.isEmpty()) {
-            throw new MedicoNoDisponibleException("No hay medicos disponibles.");
+
+        //obtine la especialidad que nececita el paciente
+        String especialidad = paciente.getEspecialidad();
+
+        if (especialidad == null || especialidad.trim().isEmpty()) {
+            throw new AsignacionInvalidaException(
+                "El paciente no tiene una especialidad registrada.");
         }
 
-        Doctor medico = medicosDisponibles.get(0);
+        ArrayList<Doctor> medicos = empleados.findDoctorsBySpecialty(especialidad);
+
+        Doctor medicoSeleccionado = null;
+
+        for (Doctor doctor : medicos) {
+    if (doctor.isAvailable()) {
+        medicoSeleccionado = doctor;
+        break;
+    }
+}
+
+    if (medicoSeleccionado == null) {
+        throw new MedicoNoDisponibleException(
+            "No hay medicos disponibles de la especialidad: " + especialidad);
+}
+    if (!empleados.setDoctorAvailability(medicoSeleccionado.getId(), false)) {
+    throw new MedicoNoDisponibleException(
+        "No se pudo reservar el medico " + medicoSeleccionado.getId());
+}
+
+
+        
         // Solo retirar al paciente cuando sabemos que podemos ocupar al medico.
-        if (!empleados.setDoctorAvailability(medico.getId(), false)) {
-            throw new MedicoNoDisponibleException("No se pudo reservar el medico " + medico.getId());
-        }
+
         Paciente atendido = filaEspera.atenderPaciente();
         if (atendido == null) {
             // Seguridad: no dejamos al medico ocupado si no se pudo retirar a nadie.
-            empleados.setDoctorAvailability(medico.getId(), true);
+            empleados.setDoctorAvailability(medicoSeleccionado.getId(), true);
             throw new FilaVaciaException("La fila quedo vacia antes de asignar al paciente.");
         }
-        asignaciones.put(atendido.getId(), medico.getId());
-        System.out.println("Paciente " + atendido.getId() + " asignado al medico " + medico.getId());
+        asignaciones.put(atendido.getId(), medicoSeleccionado.getId());
+        System.out.println("Paciente " + atendido.getId() + " asignado al medico " + medicoSeleccionado.getId());
         return true;
     }
 

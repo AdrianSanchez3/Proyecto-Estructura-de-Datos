@@ -2,14 +2,14 @@ public class Cita{
 
     private int id;
     private int idPaciente;
-    private int idMedico;
+    private String idMedico;
     private String fecha;
     private String hora;
     private String motivo;
     private boolean completada;
     private boolean cancelada;
 
-    public Cita(int id, int idPaciente, int idMedico,String fecha, String hora, String motivo){
+    public Cita(int id, int idPaciente, String idMedico,String fecha, String hora, String motivo){
 
         this.id = id;
         this.idPaciente = idPaciente;
@@ -29,7 +29,7 @@ public class Cita{
         return idPaciente;
     }
 
-    public int getIdMedico(){
+    public String getIdMedico(){
         return idMedico;
     }
 
