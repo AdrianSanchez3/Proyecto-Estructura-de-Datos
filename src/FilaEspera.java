@@ -3,91 +3,72 @@ import java.util.LinkedList;
 import java.util.HashSet;
 
 public class FilaEspera {
-
-    private Queue<Paciente> filaEspera;
-    private HashSet<Integer> pacientesEnEspera;
-    private ManejoPacientes manejoPacientes;
+    private final Queue<Paciente> filaEspera;
+    private final HashSet<Integer> pacientesEnEspera;
+    private final ManejoPacientes manejoPacientes;
 
     public FilaEspera(ManejoPacientes manejoPacientes) {
-
+        if (manejoPacientes == null) {
+            throw new IllegalArgumentException("ManejoPacientes es obligatorio.");
+        }
         this.manejoPacientes = manejoPacientes;
-
-        filaEspera = new LinkedList<Paciente>();
-        pacientesEnEspera = new HashSet<Integer>();
+        filaEspera = new LinkedList<>();
+        pacientesEnEspera = new HashSet<>();
     }
 
-    // anade un paciente a la fila 
+    // API original para mantener compatibilidad con las pruebas existentes.
     public boolean agregarPaciente(int id) {
-
-        Paciente paciente = manejoPacientes.buscarPaciente(id);
-
-        if (paciente == null) {
+        try {
+            return agregarPacienteOExcepcion(id);
+        } catch (PacienteNoEncontradoException | AsignacionInvalidaException e) {
             return false;
         }
+    }
 
-        // chequiar si el paciente esta en fila de espera 
+    public boolean agregarPacienteOExcepcion(int id) {
+        Paciente paciente = manejoPacientes.buscarPacienteOExcepcion(id);
         if (pacientesEnEspera.contains(id)) {
-            return false;
+            throw new AsignacionInvalidaException("El paciente " + id + " ya esta en espera.");
         }
-
         filaEspera.offer(paciente);
         pacientesEnEspera.add(id);
-
         return true;
     }
 
-    // ver el paciente sin eliminarlo de fila 
     public Paciente verSiguientePaciente() {
-
         return filaEspera.peek();
     }
 
-    // paciente atendido-> sacar de fila 
     public Paciente atenderPaciente() {
-
         if (filaEspera.isEmpty()) {
             return null;
         }
-
         Paciente paciente = filaEspera.poll();
-
         pacientesEnEspera.remove(paciente.getId());
-
         return paciente;
     }
 
-    // verifica quien esta en espera 
     public boolean estaEnEspera(int id) {
-
         return pacientesEnEspera.contains(id);
     }
 
-    // ensena todos lso pacientes en fila de espera 
     public void mostrarPacientesEnEspera() {
-
         if (filaEspera.isEmpty()) {
             System.out.println("No hay pacientes en espera.");
             return;
         }
-
         System.out.println("PACIENTES EN ESPERA");
-
         for (Paciente paciente : filaEspera) {
-
             System.out.println(paciente);
             System.out.println("--------------------");
         }
     }
 
-    // verifica si la fila esta vacia 
     public boolean estaVacia() {
-
         return filaEspera.isEmpty();
     }
 
-    // cantidad de pacientes esperando 
     public int getCantidadPacientes() {
-
         return filaEspera.size();
     }
 }

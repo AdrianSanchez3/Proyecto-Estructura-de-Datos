@@ -36,6 +36,15 @@ public class ManejoPacientes {
         return pacientes.get(id);
     }
 
+    // Variante estricta: lanza una excepcion si el ID no esta registrado.
+    public Paciente buscarPacienteOExcepcion(int id) {
+        Paciente paciente = buscarPaciente(id);
+        if (paciente == null) {
+            throw new PacienteNoEncontradoException("No existe un paciente con ID " + id);
+        }
+        return paciente;
+    }
+
     // Verifica si el paciente esta registrado.
     public boolean existePaciente(int id) {
         return pacientes.containsKey(id);

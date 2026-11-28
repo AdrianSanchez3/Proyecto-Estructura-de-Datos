@@ -1,59 +1,73 @@
 import java.util.ArrayList;
 
-public class ManejoCitas{
+public class ManejoCitas {
+    private final ArrayList<Cita> citas;
 
-    private ArrayList<Cita> citas;
-    public ManejoCitas(){
-        citas = new ArrayList<Cita>();
+    public ManejoCitas() {
+        citas = new ArrayList<>();
     }
 
-    public boolean crearCita(Cita nuevaCita){
-
-        if (nuevaCita == null){
+    // Se conserva el contrato booleano del codigo original.
+    public boolean crearCita(Cita nuevaCita) {
+        try {
+            return crearCitaOExcepcion(nuevaCita);
+        } catch (IllegalArgumentException | CitaConflictivaException e) {
             return false;
         }
+    }
 
-        //Verifica que no haya una cita con el mismo ID 
-        for (Cita cita : citas){
-            if (cita.getId() == nuevaCita.getId()){
-                return false;
-            }
+    public boolean crearCitaOExcepcion(Cita nuevaCita) {
+        if (nuevaCita == null) {
+            throw new IllegalArgumentException("No se puede registrar una cita nula.");
+        }
+        if (nuevaCita.getId() <= 0 || nuevaCita.getIdPaciente() <= 0 || nuevaCita.getIdMedico() <= 0
+                || nuevaCita.getFecha() == null || nuevaCita.getFecha().trim().isEmpty()
+                || nuevaCita.getHora() == null || nuevaCita.getHora().trim().isEmpty()) {
+            throw new IllegalArgumentException("La cita contiene IDs, fecha u hora invalidos.");
         }
 
+        for (Cita existente : citas) {
+            if (existente.getId() == nuevaCita.getId()) {
+                throw new CitaConflictivaException("Ya existe una cita con ID " + nuevaCita.getId());
+            }
+            // Una cita cancelada ya no reserva su horario. Una completada si lo reserva.
+            if (!existente.isCancelada()
+                    && existente.getFecha().equals(nuevaCita.getFecha())
+                    && existente.getHora().equals(nuevaCita.getHora())) {
+                if (existente.getIdMedico() == nuevaCita.getIdMedico()) {
+                    throw new CitaConflictivaException("El medico ya tiene una cita en ese horario.");
+                }
+                if (existente.getIdPaciente() == nuevaCita.getIdPaciente()) {
+                    throw new CitaConflictivaException("El paciente ya tiene una cita en ese horario.");
+                }
+            }
+        }
         citas.add(nuevaCita);
         return true;
     }
 
-    public Cita buscarCita(int id){
-
-        for (Cita cita : citas){
+    public Cita buscarCita(int id) {
+        for (Cita cita : citas) {
             if (cita.getId() == id) {
                 return cita;
             }
         }
-
         return null;
     }
 
-    // Cancela una cita 
     public boolean cancelarCita(int id) {
-
         Cita cita = buscarCita(id);
-
-        if (cita == null || cita.isCancelada() || cita.isCompletada()){
+        if (cita == null || cita.isCancelada() || cita.isCompletada()) {
             return false;
         }
-
         cita.cancelarCita();
         return true;
     }
 
-
     public void mostrarCitas() {
-
         for (Cita cita : citas) {
             System.out.println(cita);
             System.out.println("--------------------");
         }
     }
-} 
+}
