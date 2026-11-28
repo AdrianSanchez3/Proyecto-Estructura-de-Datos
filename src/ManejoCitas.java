@@ -63,7 +63,30 @@ public class ManejoCitas {
         cita.cancelarCita();
         return true;
     }
+    
+    public boolean completarCita(int id, ManejoPacientes manejoPacientes) {
 
+    Cita cita = buscarCita(id);
+
+    if (cita == null || cita.isCancelada() || cita.isCompletada()
+            || manejoPacientes == null) {
+        return false;
+    }
+
+    Paciente paciente = manejoPacientes.buscarPaciente(cita.getIdPaciente());
+
+    if (paciente == null){
+        return false;
+    }
+
+        cita.completarCita();
+
+    if (!manejoPacientes.registrarVisita(cita)) {
+        return false;
+    }
+
+    return true;
+    }
     public void mostrarCitas() {
         for (Cita cita : citas) {
             System.out.println(cita);

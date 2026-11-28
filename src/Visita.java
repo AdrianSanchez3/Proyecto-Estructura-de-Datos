@@ -1,12 +1,12 @@
 public class Visita {
     
-    private int idMedico;
+    private String idMedico;
     private int idPaciente;
     private String fecha;
     
 
     public Visita(int idPaciente,
-              int idMedico,
+              String idMedico,
               String fecha){
         this.idPaciente = idPaciente;
         this.idMedico = idMedico;
@@ -16,7 +16,7 @@ public class Visita {
     public int getIdPaciente(){
         return idPaciente;
     }
-    public int getIdMedico(){
+    public String getIdMedico(){
         return idMedico;
     }
 

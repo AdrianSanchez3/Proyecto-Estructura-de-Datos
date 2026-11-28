@@ -31,18 +31,14 @@ public class Paciente {
         return especialidad;
     }   
 
-    public boolean agregarCita(Cita cita) {
-        if (cita == null || cita.getIdPaciente() != id) {
-            return false;
-        }
-        for (Cita existente : historialClinico) {
-            if (existente.getId() == cita.getId()) {
-                return false;
-            }
-        }
-        historialClinico.add(cita);
-        return true;
+public boolean agregarCita(Cita cita) {
+    if (cita == null || cita.getIdPaciente() != id) {
+        return false;
     }
+
+    historialClinico.add(cita);
+    return true;
+}
 
     public void mostrarHistorialClinico() {
         if (historialClinico.isEmpty()) {
