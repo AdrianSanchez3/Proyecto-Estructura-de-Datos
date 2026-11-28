@@ -87,6 +87,22 @@ public class ManejoCitas {
 
     return true;
     }
+    /** Muestra las citas no canceladas para una fecha YYYY-MM-DD. */
+    public int mostrarCitasDeFecha(String fecha) {
+        int cantidad = 0;
+        for (Cita cita : citas) {
+            if (!cita.isCancelada() && cita.getFecha().equals(fecha)) {
+                System.out.println(cita);
+                System.out.println("--------------------");
+                cantidad++;
+            }
+        }
+        if (cantidad == 0) {
+            System.out.println("No hay citas para la fecha " + fecha + ".");
+        }
+        return cantidad;
+    }
+
     public void mostrarCitas() {
         for (Cita cita : citas) {
             System.out.println(cita);

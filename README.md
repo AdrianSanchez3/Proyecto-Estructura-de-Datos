@@ -18,6 +18,22 @@ Instala JDK 21+ y abre una terminal en la carpeta principal del proyecto.
 javac src/*.java
 ```
 
+## Ejecutar el sistema (terminal)
+
+```powershell
+javac src/*.java
+java -cp src Main
+```
+
+El menu de `Main.java` permite registrar pacientes y personal, consultar medicos, gestionar
+la fila, asignar y liberar medicos, crear/cancelar/completar citas y ver historiales.
+La opcion `1` carga datos de demostracion (medicos D001-D004 y pacientes 101-103).
+Ejemplo: opcion `1`, luego `11` con paciente `101`, luego `13` para asignar.
+Para registrar una cita, usa la opcion `16`; al completarla con `18` se guarda
+en el historial, que puedes ver con `20`. La opcion `21` muestra las citas de hoy.
+
+Los registros estan en memoria y se pierden al cerrar el programa.
+
 ## Ejecutar pruebas
 
 ```powershell
@@ -49,13 +65,12 @@ try {
 
 `asignarPaciente()` sigue devolviendo `true` o `false`. `finalizarAtencion(idPaciente)` libera al medico y elimina la asignacion activa. `crearCita()` mantiene el resultado booleano.
 
-## Limitaciones pendientes para integracion completa
+## Limitaciones conocidas
 
-- `Doctor` usa `String` como ID (`D001`), pero `Cita` y `Visita` usan `int` para ID del medico. Los responsables deben acordar un tipo compartido para conectar citas a empleados.
-- `Visita.java` aun no registra automaticamente una atencion clinica; `ManejoPacientes` almacena citas en el historial, no datos clinicos completos.
-- `AsignacionPacientes` elige el primer medico disponible: aun no filtra por especialidad ni horario de cita.
-- El sistema no tiene persistencia: reiniciar Java pierde los datos registrados.
-- Estas clases no contienen un menu general; las pruebas incluyen ejemplos de uso.
+- Los IDs de medicos son `String` (por ejemplo `D001`) en `Doctor`, `Cita` y `Visita`.
+- El historial clinico almacena citas; `Visita.java` no guarda diagnosticos u observaciones.
+- Las asignaciones filtran por especialidad y disponibilidad general, pero no reservan horarios especificos.
+- No hay persistencia: al reiniciar Java se pierden los registros.
 
 ## Colaboradores
 
